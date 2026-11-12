@@ -1,0 +1,11 @@
+check_id,check_name,metric_value,notes
+DQ01,row_count,5693713.0,2024+2025 pin
+DQ02,duplicate_invoice_id_rate_pct,25.15123259637428,invoice_id should be unique grain
+DQ03,pct_lines_missing_county,0.03846347717210193,geo scorecards need county
+DQ04,pct_lines_missing_category,0.0,
+DQ05,pct_lines_missing_state_bottle_cost,77.57229772557908,blocks trusted margin KPIs
+DQ06,pct_lines_missing_state_bottle_retail,77.57015501132565,blocks trusted margin KPIs
+DQ07,pct_sales_dollars_with_cost_available,22.617716774201313,sales-weighted cost coverage
+DQ08,negative_or_zero_sales_dollars_lines,6049.0,
+DQ09,zero_bottle_lines,6049.0,
+DQ10,distinct_stores,2353.0,

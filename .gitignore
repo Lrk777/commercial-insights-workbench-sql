@@ -1,0 +1,9 @@
+*.duckdb
+*.duckdb.wal
+data/raw/*
+!data/raw/.gitkeep
+__pycache__/
+.venv/
+.DS_Store
+outputs/*.csv
+!outputs/sample/
