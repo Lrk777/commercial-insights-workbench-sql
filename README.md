@@ -14,45 +14,46 @@ Given a messy two-year invoice extract, what is safe to report this week, what i
 4. **The final week (2025-12-29) shows drops of up to 63%** (Scotch −63%, Straight Bourbon −52%). They line up with a short year-end week, so they are flagged for review, not reported as a demand fall.
 5. **`invoice_id` repeats on 25% of lines**, so it is not a unique key. Invoice-level reconciliation waits until the data owner confirms the grain.
 
-```mermaid
----
-config:
-  xyChart:
-    width: 760
-    height: 360
----
-xychart-beta horizontal
-    title "Lines with cost data, top 10 categories (gate: 80% report, 40% partial)"
-    x-axis ["American Vodkas", "Canadian Whiskies", "Straight Bourbon Whiskies", "100% Agave Tequila", "Whiskey Liqueur", "Spiced Rum", "Temporary & Specialty Packages", "Tennessee Whiskies", "Imported Vodkas", "American Flavored Vodka"]
-    y-axis "% of lines" 0 --> 100
-    bar [22.2, 21.9, 22.1, 22.9, 23.7, 21.0, 26.9, 23.0, 22.4, 21.7]
-```
-```mermaid
----
-config:
-  xyChart:
-    width: 760
-    height: 360
----
-xychart-beta horizontal
-    title "Share of sales dollars by vendor (top 5 = 56.4%)"
-    x-axis ["Diageo Americas", "Sazerac Company Inc", "Jim Beam Brands", "Heaven Hill Brands", "Pernod Ricard Usa", "Fifth Generation Inc", "Brown Forman Corp.", "Bacardi Usa Inc"]
-    y-axis "% of sales $" 0 --> 24
-    bar [21.2, 16.4, 6.6, 6.2, 6.1, 5.2, 4.6, 4.5]
-```
-```mermaid
----
-config:
-  xyChart:
-    width: 760
-    height: 360
----
-xychart-beta horizontal
-    title "Share of sales dollars by county"
-    x-axis ["Polk", "Linn", "Scott", "Johnson", "Black Hawk", "Pottawattamie", "Dallas", "Woodbury"]
-    y-axis "% of sales $" 0 --> 26
-    bar [22.9, 8.7, 6.3, 6.0, 4.3, 3.5, 3.5, 3.4]
-```
+**Lines with cost data, top 10 categories (gate: 80% report, 40% partial)**
+
+| | % of lines | |
+|---|---:|---|
+| American Vodkas | 22.2% | `████` |
+| Canadian Whiskies | 21.9% | `████` |
+| Straight Bourbon Whiskies | 22.1% | `████` |
+| 100% Agave Tequila | 22.9% | `█████` |
+| Whiskey Liqueur | 23.7% | `█████` |
+| Spiced Rum | 21.0% | `████` |
+| Temporary & Specialty Packages | 26.9% | `█████` |
+| Tennessee Whiskies | 23.0% | `█████` |
+| Imported Vodkas | 22.4% | `████` |
+| American Flavored Vodka | 21.7% | `████` |
+
+**Share of sales dollars by vendor (top 5 = 56.4%)**
+
+| | % of sales $ | |
+|---|---:|---|
+| Diageo Americas | 21.2% | `██████████████████` |
+| Sazerac Company Inc | 16.4% | `██████████████` |
+| Jim Beam Brands | 6.6% | `█████` |
+| Heaven Hill Brands | 6.2% | `█████` |
+| Pernod Ricard Usa | 6.1% | `█████` |
+| Fifth Generation Inc | 5.2% | `████` |
+| Brown Forman Corp. | 4.6% | `████` |
+| Bacardi Usa Inc | 4.5% | `████` |
+
+**Share of sales dollars by county**
+
+| | % of sales $ | |
+|---|---:|---|
+| Polk | 22.9% | `██████████████████` |
+| Linn | 8.7% | `███████` |
+| Scott | 6.3% | `█████` |
+| Johnson | 6.0% | `█████` |
+| Black Hawk | 4.3% | `███` |
+| Pottawattamie | 3.5% | `███` |
+| Dallas | 3.5% | `███` |
+| Woodbury | 3.4% | `███` |
 
 ## Recommendation
 
