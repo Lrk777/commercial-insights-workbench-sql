@@ -56,22 +56,43 @@ def build_data() -> dict:
 
 
 BODY = """
-<h1>Liquor sales reporting: what's safe to report this week</h1>
-<p class="sub">A weekly BI reporting cycle on 5.69M invoice lines from Iowa's open liquor sales data (2024–2025). The data-quality checks decide what goes in the report and what gets held back.</p>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+:root{--surface:#eef1f5;--card:#ffffff;--ink:#0f1b2d;--ink2:#46536a;--muted:#5f6b80;--grid:#e3e8ef;--line:#cfd7e2;
+--c1:#1f4e8c;--c2:#d9480f;--c3:#0f8a6c;--gray:#b5bfcc;--lo:#c9d7ea;--ok:#0f7b3f;--hold:#c92a2a;--rev:#9a6700}
+@media (prefers-color-scheme:dark){:root{--surface:#0b1220;--card:#121b2c;--ink:#e8eef7;--ink2:#a9b6c9;--muted:#8b98ad;--grid:#1e2a3d;--line:#2b3a52;
+--c1:#5b8fd6;--c2:#e8692e;--c3:#2bb38d;--gray:#4a586e;--lo:#24385a;--ok:#3fbf73;--hold:#f06363;--rev:#e3b341}}
+body{font-family:"IBM Plex Sans",system-ui,sans-serif}
+main{max-width:1180px}
+.top{background:#0f1b2d;color:#fff;border-radius:12px;padding:22px 26px;display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:space-between;align-items:flex-end;margin-bottom:18px}
+.top h1{color:#fff;font-size:26px;margin:4px 0 6px}.top .sub{color:#c7d2e3;margin:0;font-size:14px}
+.eyebrow{font:500 12px "IBM Plex Mono",monospace;letter-spacing:.12em;color:#8fb3e8;text-transform:uppercase;margin:0}
+.pill{font:500 13px "IBM Plex Mono",monospace;background:#1d3557;color:#fff;border-radius:999px;padding:8px 14px;white-space:nowrap}
+.kpis{grid-template-columns:repeat(4,1fr)}.kpi{border-top:3px solid var(--c1);border-radius:8px}.kpi .v{font-size:30px;font-weight:700}
+.kpi .l{font-size:13px}
+.card{border-radius:8px}.card h2{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink2);margin-bottom:6px}
+.board td,.board th{padding:10px 8px;font-size:14px;text-align:left;vertical-align:top}.board th{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.chip{display:inline-flex;align-items:center;gap:6px;font:600 12px "IBM Plex Mono",monospace;letter-spacing:.06em;border-radius:6px;padding:4px 9px;border:1.5px solid currentColor;white-space:nowrap}
+.chip.ok{color:var(--ok)}.chip.hold{color:var(--hold)}.chip.rev{color:var(--rev)}
+@media (max-width:760px){.top{padding:18px}}
+</style>
+<div class="top"><div><p class="eyebrow">Weekly reporting pack · Iowa liquor sales</p><h1>What's safe to report this week</h1><p class="sub">5.69M invoice lines, 2024–2025. Data-quality checks decide what goes in the report and what gets held back.</p></div><span class="pill" id="wk"></span></div>
 <div class="kpis">
- <div class="kpi"><div class="v" id="k1"></div><div class="l" id="k1l"></div></div>
- <div class="kpi"><div class="v" id="k2"></div><div class="l" id="k2l"></div></div>
- <div class="kpi"><div class="v" id="k3"></div><div class="l">of sales dollars have cost data, so margin is held back</div></div>
- <div class="kpi"><div class="v" id="k4"></div><div class="l">of lines share an invoice ID, so it isn't a unique key</div></div>
+ <div class="kpi"><div class="l">Volume checked</div><div class="v" id="k1"></div><div class="l" id="k1l"></div></div>
+ <div class="kpi"><div class="l">Top-5 vendor share</div><div class="v" id="k2"></div><div class="l" id="k2l"></div></div>
+ <div class="kpi"><div class="l">Sales $ with cost data</div><div class="v" id="k3"></div><div class="l">below the 40% needed to report margin</div></div>
+ <div class="kpi"><div class="l">Repeated invoice IDs</div><div class="v" id="k4"></div><div class="l">of lines, so invoice_id isn't a unique key</div></div>
 </div>
 <div class="grid">
- <div class="card"><h2>Vendor concentration</h2><p class="note">Share of sales dollars. The top 5 vendors (blue) hold more than half.</p><div id="c1"></div><details><summary>Table</summary><div id="t1"></div></details></div>
- <div class="card"><h2>Why margin is held back</h2><p class="note">Share of invoice lines with cost and retail price, top 20 categories by sales. Reporting rule: 80% or more = report, 40% or more = report with a caveat. Every category falls below 40%.</p><div id="c2"></div><details><summary>Table</summary><div id="t2"></div></details></div>
+ <div class="card wide"><h2>Report status this week</h2><div class="tablewrap"><table class="board"><thead><tr><th>Section</th><th>Status</th><th>Why</th></tr></thead><tbody id="board"></tbody></table></div></div>
+ <div class="card"><h2>Vendor concentration</h2><p class="note">Share of sales dollars. The top 5 vendors (dark blue) hold more than half.</p><div id="c1"></div><details><summary>Table</summary><div id="t1"></div></details></div>
+ <div class="card"><h2>Why margin is on hold</h2><p class="note">Share of invoice lines with cost and retail price, top 20 categories by sales. Rule: 80%+ = report, 40%+ = report with a caveat. Every category is below 40%.</p><div id="c2"></div><details><summary>Table</summary><div id="t2"></div></details></div>
  <div class="card"><h2>Sales by county</h2><p class="note">Share of sales dollars, top 20 counties. Polk is so large that any statewide average is mostly a Polk number.</p><div id="c3"></div><details><summary>Table</summary><div id="t3"></div></details></div>
  <div class="card"><h2 id="h4"></h2><p class="note">Week-over-week change in sales, top 20 categories. Orange = flagged for review: the drops line up with a short year-end week, not a fall in demand.</p><div id="c4"></div><details><summary>Table</summary><div id="t4"></div></details></div>
  <div class="card wide"><h2>Data-quality checks run before every report</h2><p class="note">These numbers decide what the weekly report can include.</p><div id="t5"></div></div>
 </div>
-<footer>Source: Iowa Department of Revenue, Alcoholic Beverages Division, Iowa Liquor Sales (data.iowa.gov, public domain), 2024–2025 extract. The dashboard reads the committed sample outputs. Code and method: <a href="https://github.com/Lrk777/commercial-insights-workbench-sql">github.com/Lrk777/commercial-insights-workbench-sql</a>.</footer>
+<footer>Source: Iowa Department of Revenue, Alcoholic Beverages Division, Iowa Liquor Sales (data.iowa.gov, public domain), 2024–2025 extract. The dashboard reads the committed sample outputs. Built by Lavanya Kumar. Code and method: <a href="https://github.com/Lrk777/commercial-insights-workbench-sql">github.com/Lrk777/commercial-insights-workbench-sql</a>.</footer>
 """
 
 SCRIPT = r"""
@@ -81,6 +102,16 @@ function render() {
   $("#k1").textContent = (K.lines / 1e6).toFixed(2) + "M"; $("#k1l").textContent = "invoice lines from " + fmtN(K.stores) + " stores";
   $("#k2").textContent = p1(K.top5_pct); $("#k2l").textContent = "of sales from the top 5 vendors (" + usd(K.top5_dollars) + " of " + usd(K.total_dollars) + ")";
   $("#k3").textContent = p1(K.cost_sales_pct); $("#k4").textContent = p1(K.dup_invoice_pct);
+  $("#wk").textContent = "Week of " + D.week;
+  const nflag = D.categories.filter(c => c.flag).length, dq = Object.fromEntries(D.dq.map(d => [d.check, d.value]));
+  const rows = [["Sales by vendor, category and county", "ok", "REPORT", "Category is never missing and county is missing on " + dq["% lines missing county"].toFixed(2) + "% of lines."],
+    ["Margin by category", "hold", "HOLD", "Only " + p1(K.cost_sales_pct) + " of sales dollars have cost data; the rule needs 40%."],
+    ["Invoice-level totals", "hold", "HOLD", p1(K.dup_invoice_pct) + " of lines share an invoice ID. Waiting for the data owner to confirm the grain."],
+    ["Week-over-week change", "rev", "REVIEW", nflag + " of " + D.categories.length + " categories dropped sharply in a short year-end week."]];
+  const tb = $("#board"); tb.replaceChildren(...rows.map(([sec, cls, lab, why]) => { const tr = document.createElement("tr");
+    const a = document.createElement("td"); a.textContent = sec; a.style.fontWeight = "600";
+    const b = document.createElement("td"); const chip = document.createElement("span"); chip.className = "chip " + cls; chip.textContent = (cls === "ok" ? "✓ " : cls === "hold" ? "■ " : "! ") + lab; b.appendChild(chip);
+    const c = document.createElement("td"); c.textContent = why; c.style.color = "var(--ink2)"; tr.append(a, b, c); return tr; }));
   hbars("#c1", D.vendors.map((v, i) => ({label: v.name, v: v.pct, color: i < 5 ? css("--c1") : css("--gray"), strong: i < 5,
     extra: [[css("--gray"), "cumulative share", p1(v.cum)], [css("--gray"), "sales", usd(v.dollars)]]})), {left: 200, fmt: p1, metric: "share of sales"});
   table("#t1", ["Vendor", "Share", "Cumulative", "Sales", "Stores"], D.vendors.map(v => [v.name, p1(v.pct), p1(v.cum), usd(v.dollars), fmtN(v.stores)]));
@@ -90,7 +121,7 @@ function render() {
   hbars("#c3", D.counties.map((c, i) => ({label: c.name, v: c.pct, color: i === 0 ? css("--c1") : css("--lo"), strong: i === 0,
     extra: [[css("--gray"), "sales", usd(c.dollars)], [css("--gray"), "active stores (avg)", fmtN(c.stores, 1)]]})), {left: 120, fmt: p1, metric: "share of sales"});
   table("#t3", ["County", "Share", "Sales", "Active stores"], D.counties.map(c => [c.name, p1(c.pct), usd(c.dollars), fmtN(c.stores, 1)]));
-  $("#h4").textContent = "Week of " + D.week + ": change vs the week before";
+  $("#h4").textContent = "Year-end week vs the week before";
   const cats = D.categories.slice().sort((a, b) => a.wow - b.wow);
   hbars("#c4", cats.map(c => ({label: c.name, v: c.wow, color: c.flag ? css("--c2") : css("--gray"),
     extra: [[css("--gray"), "this week", usd(c.dollars)], [css("--gray"), "week before", usd(c.prior)]]})), {left: 210, fmt: v => (v > 0 ? "+" : "") + v.toFixed(0) + "%", metric: "change"});
