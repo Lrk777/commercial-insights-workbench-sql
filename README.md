@@ -1,5 +1,7 @@
 # Commercial Insights Analyst Workbench
 
+**Live dashboard: [lrk777.github.io/commercial-insights-workbench-sql](https://lrk777.github.io/commercial-insights-workbench-sql/)**
+
 A SQL workbench that runs the weekly reporting cycle of a BI / category insights analyst on a real 5.69M-line invoice extract: data-quality checks, certified weekly marts, category and county scorecards, a margin-coverage gate, vendor concentration, anomaly flags, and a stakeholder memo.
 
 ## The question
